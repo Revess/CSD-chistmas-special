@@ -1,5 +1,8 @@
 class Snowman {
     constructor(xRelative,size,direction){
+        //Keeping the score
+        this.score = 0;
+
         //Gerenals
         this.xRelative = xRelative;
 
@@ -16,7 +19,7 @@ class Snowman {
         //Body properties
         this.bodySize = this.size*1.25;
         this.x = this.bodySize+(this.screenpercentage*this.xRelative);
-        this.y = window.innerHeight/2;
+        this.y = (window.innerHeight/100)*50;
         this.bodyY = this.y+this.size/1.5;
 
         //Carrot properties
@@ -39,8 +42,8 @@ class Snowman {
         //hitBox
         this.hitRight = this.x+(this.bodySize/2);
         this.hitLeft = this.x-(this.bodySize/2);
-        this.hitTop = this.bodyY+(this.bodySize/2)+this.size;
-        this.hitBottom = this.bodyY-(this.bodySize/2);
+        this.hitTop = this.bodyY-(this.bodySize/2)-this.size;
+        this.hitBottom = this.bodyY+(this.bodySize/2);
     }
 
     draw() {
@@ -74,7 +77,7 @@ class Snowman {
         //Body properties
         this.bodySize = this.size*1.25;
         this.x = this.bodySize+(this.screenpercentage*this.xRelative);
-        this.y = window.innerHeight/2;
+        this.y = (window.innerHeight/100)*((this.y/window.innerHeight)*100);
         this.bodyY = this.y+this.size/1.5;
 
         //Carrot properties
@@ -94,11 +97,12 @@ class Snowman {
         //hitBox
         this.hitRight = this.x+(this.bodySize/2);
         this.hitLeft = this.x-(this.bodySize/2);
-        this.hitTop = this.bodyY+(this.bodySize/2)+this.size;
-        this.hitBottom = this.bodyY-(this.bodySize/2);
+        this.hitTop = this.bodyY-(this.bodySize/2)-this.size;
+        this.hitBottom = this.bodyY+(this.bodySize/2);
     }
 
-    move(direction){
+    move(direction,speed){
+        this.speed = speed;
         if(direction == "up" && this.y-(this.size/2)-this.speed > 0){
             this.y-=this.speed;
             this.bodyY-=this.speed;
@@ -110,9 +114,12 @@ class Snowman {
             this.eyeY+=this.speed;
             this.buttonY+=this.speed;
         }
-        this.hitRight = this.x+(this.bodySize/2);
-        this.hitLeft = this.x-(this.bodySize/2);
-        this.hitTop = this.bodyY+(this.bodySize/2)+this.size;
-        this.hitBottom = this.bodyY-(this.bodySize/2);
+
+        this.hitTop = this.bodyY-(this.bodySize/2)-this.size;
+        this.hitBottom = this.bodyY+(this.bodySize/2);
+    }
+
+    hit(){
+        console.log("ouch");
     }
 }
