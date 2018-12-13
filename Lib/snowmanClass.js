@@ -122,4 +122,6 @@ class Snowman {
     hit(){
         console.log("ouch");
     }
+
+    
 }

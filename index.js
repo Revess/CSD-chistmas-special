@@ -8,6 +8,8 @@ var frames = 0;
 var framesAI = 0;
 var randomDirection;
 var randomShoot;
+var noSnowBall = true;
+var soundsArray;
 
 //Functions
 function hitRegistration(){
@@ -42,7 +44,24 @@ function hitRegistration(){
             }
         }
     });
+
+    //Checks hit for each snowball
+    snowBallArray.forEach(function(snowball){
+        snowBallArrayP2.forEach(function(snowballP2){
+            if(snowball.hitRight >= snowballP2.hitLeft && snowball.hitRight <= snowballP2.hitRight){
+                if(snowball.hitTop <= snowballP2.hitTop && snowball.hitTop >= snowballP2.hitBottom || snowball.hitBottom <= snowballP2.hitBottom && snowball.hitBottom >= snowballP2.hitTop){
+                    snowBallArray.splice(snowBallArray.indexOf(snowball),1);
+                    snowBallArrayP2.splice(snowBallArrayP2.indexOf(snowballP2),1);
+                }
+            }
+        });
+    });
 }
+
+function preload() {
+    soundFormats('mp3', 'ogg');
+    soundsArray = [loadSound('assets/intro.mp3'),loadSound('assets/ouch.mp3'),loadSound('assets/punch.mp3'),loadSound('assets/throw.mp3'),loadSound('assets/victory.mp3')];
+  }
 
 //Setup
 function setup() {
@@ -99,18 +118,31 @@ function draw() {
             snowBallArray[snowBallArray.length] = new Snowball(snowman.bodyY,snowman.x,1);
             frames=0;
         }
+
+        //Check for the AI if he's in the field of a snowball
+        snowBallArray.forEach(function(snowball){
+            if(snowball.hitTop >= snowmanP2.hitBottom && snowball.hitTop <= snowmanP2.hitTop && snowball.hitBottom <= snowmanP5.hitBottom && snowball.hitBottom >= snowmanP2.hitTop){
+                if(snowball.x > (snowmanP5.hitBottom-snowmanP5.hitTop)/2){
+                    snowmanP2.move("up",10);
+                    noSnowBall = false;
+                } else {
+                    snowmanP2.move("down",10);
+                    noSnowBall = false;
+                }
+            }
+        });
     }
 
     //Code for snowman AI
     if(frameCount%30 == 0){
         randomDirection = random();
     }
-    if(randomDirection > 0.5 && snowmanP2.hitTop > snowman.hitTop-(height/5)){
+    if(randomDirection > 0.5 && snowmanP2.hitTop > snowman.hitTop-(height/5) && noSnowBall){
         snowmanP2.move("up",10);
     } else if(randomDirection < 0.5 && snowmanP2.hitBottom < snowman.hitBottom+(height/5)){
         snowmanP2.move("down",10);
     }
-        randomShoot = random(); 
+    randomShoot = random(); 
     if(randomShoot > 0.95 && snowmanP2.hitTop > snowman.hitTop-(height/15) || randomShoot > 0.95 && snowmanP2.hitTop > snowman.hitBottom-(height/15) ){
         if(framesAI >= 15){
             snowBallArrayP2[snowBallArrayP2.length] = new Snowball(snowmanP2.bodyY,snowmanP2.x,-1);
